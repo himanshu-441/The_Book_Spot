@@ -11,9 +11,9 @@ similarity_scores =  pickle.load(open('similarity_scores1.pkl','rb'))
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///the-book-spot.db"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-#app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://jdisqjmqyuohdm:8ae04cc8944b2f821fcdbb4f729e5aa0c51cfa0ed465f7ef03d8f14111f48766@ec2-18-209-78-11.compute-1.amazonaws.com:5432/d3v3bf86878p97"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://jdisqjmqyuohdm:8ae04cc8944b2f821fcdbb4f729e5aa0c51cfa0ed465f7ef03d8f14111f48766@ec2-18-209-78-11.compute-1.amazonaws.com:5432/d3v3bf86878p97"
 db = SQLAlchemy(app)
 
 
@@ -101,4 +101,4 @@ def recommend():
 
 
 if __name__ =="__main__":
-    app.run(debug=True, port=8000)
+    app.run(debug=False, port=8000)
