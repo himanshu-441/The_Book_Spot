@@ -10,10 +10,10 @@ books2 = pickle.load(open('books1.pkl','rb'))
 similarity_scores =  pickle.load(open('similarity_scores1.pkl','rb'))
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///the-book-spot.db"
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///the-book-spot.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://jdisqjmqyuohdm:8ae04cc8944b2f821fcdbb4f729e5aa0c51cfa0ed465f7ef03d8f14111f48766@ec2-18-209-78-11.compute-1.amazonaws.com:5432/d3v3bf86878p97"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://mthwnkvmlsvjzp:ec522ca94a36167296640a3c861dc957da3d0ea3a5f41ee1d63dc5bc73807d89@ec2-44-205-177-160.compute-1.amazonaws.com:5432/d19lnnc3bfcl9n"
 db = SQLAlchemy(app)
 
 
