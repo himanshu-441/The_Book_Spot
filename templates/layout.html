@@ -24,10 +24,10 @@
 
     <div class="header-1">
 
-        <a href="#" class="logo"> <i class="fas fa-book"></i> TheBookSpot </a>
+       <!-- <a href="#" class="logo"> <i class="fas fa-book"></i> TheBookSpot </a>
 
         
-        <!--<form action="" class="search-form">
+        <form action="" class="search-form">
             <input type="search" name="" placeholder="search here..." id="search-box">
             <label for="search-box" class="fas fa-search"></label>
         </form>
@@ -49,6 +49,13 @@
             <!--<a href="/#reviews">reviews</a>-->
             <a  href="/recommender">Recommender</a>
             <a  href="/books">Books</a>
+            
+            <a href="/register">Register</a>
+            {% if user %}
+            <a href="/logout">Logout</a>
+            {% else %}
+            <a href="/login">Login</a>
+            {% endif %}
         </nav>
     </div>
 
@@ -65,19 +72,19 @@
 
     <div id="close-login-btn" class="fas fa-times"></div>
 
-    <form action="">
+    <form action="/login" method="POST">
         <h3>sign in</h3>
         <span>username</span>
-        <input type="email" name="" class="box" placeholder="enter your email" id="">
+        <input type="email" name="email" class="box" placeholder="enter your email" id="">
         <span>password</span>
-        <input type="password" name="" class="box" placeholder="enter your password" id="">
+        <input type="password" name="password" class="box" placeholder="enter your password" id="">
         <div class="checkbox">
             <input type="checkbox" name="" id="remember-me">
             <label for="remember-me"> remember me</label>
         </div>
         <input type="submit" value="sign in" class="btn">
         <p>forget password ? <a href="#">click here</a></p>
-        <p>don't have an account ? <a href="#">create one</a></p>
+        <p>don't have an account ? <a href="/register">create one</a></p>
     </form>
 
 </div>-->

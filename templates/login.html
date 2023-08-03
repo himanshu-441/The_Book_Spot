@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<form action="/login" method="POST">
+    <input type="email" name="email" placeholder="email">
+    <input type="password" name="password" placeholder="password">
+    <input type="submit">
+</form>
+
+{% if user %}
+ 
+<h1>user.email</h1>
+
+{% endif %}
+
+
+{% endblock %}
