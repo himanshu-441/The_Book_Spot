@@ -24,7 +24,7 @@
 
     <div class="header-1">
 
-       <!-- <a href="#" class="logo"> <i class="fas fa-book"></i> TheBookSpot </a>
+       <a href="#" class="logo"> <i class="fas fa-book"></i> TheBookSpot </a>
 
         
         <form action="" class="search-form">
@@ -34,10 +34,13 @@
 
         <div class="icons">
             <div id="search-btn" class="fas fa-search"></div>
-            <a href="#" class="fas fa-heart"></a>
-            <a href="#" class="fas fa-shopping-cart"></a>
+            <!--<a href="#" class="fas fa-heart"></a>
+            <a href="#" class="fas fa-shopping-cart"></a>-->
+            
             <div id="login-btn" class="fas fa-user"></div>
-        </div>-->
+            <div id="register-btn" class="fas fa-user"></div>
+            
+        </div>
 
     </div>
 
@@ -53,9 +56,8 @@
             <a href="/register">Register</a>
             {% if user %}
             <a href="/logout">Logout</a>
-            {% else %}
-            <a href="/login">Login</a>
-            {% endif %}
+            {% endif%}
+            
         </nav>
     </div>
 
@@ -66,28 +68,57 @@
 <!-- bottom navbar  -->
 
 
+<!-- profile form -->
+
+
+
+
+
 <!-- login form  -->
 
-<!--<div class="login-form-container">
+<div class="login-form-container">
 
     <div id="close-login-btn" class="fas fa-times"></div>
 
+
     <form action="/login" method="POST">
         <h3>sign in</h3>
-        <span>username</span>
+        <span>email</span>
         <input type="email" name="email" class="box" placeholder="enter your email" id="">
         <span>password</span>
         <input type="password" name="password" class="box" placeholder="enter your password" id="">
-        <div class="checkbox">
+        <!--<div class="checkbox">
             <input type="checkbox" name="" id="remember-me">
             <label for="remember-me"> remember me</label>
-        </div>
+        </div>-->
         <input type="submit" value="sign in" class="btn">
-        <p>forget password ? <a href="#">click here</a></p>
+        <!--<p>forget password ? <a href="#">click here</a></p>-->
         <p>don't have an account ? <a href="/register">create one</a></p>
     </form>
 
-</div>-->
+</div>
+
+<div class="register-form-container">
+
+    <div id="close-register-btn" class="fas fa-times"></div>
+
+
+    <form action="/register" method="POST">
+        <h3>Register</h3>
+        <span>email</span>
+        <input type="email" name="email" class="box" placeholder="enter your email" id="">
+        <span>password</span>
+        <input type="password" name="password" class="box" placeholder="enter your password" id="">
+        <!--<div class="checkbox">
+            <input type="checkbox" name="" id="remember-me">
+            <label for="remember-me"> remember me</label>
+        </div>-->
+        <input type="submit" value="Register" class="btn">
+        <!--<p>forget password ? <a href="#">click here</a></p>-->
+        <!--<p>don't have an account ? <a href="/register">create one</a></p>-->
+    </form>
+
+</div>
 
 <!-- home section starts  -->
 

@@ -1,4 +1,4 @@
-/*searchForm = document.querySelector('.search-form');
+searchForm = document.querySelector('.search-form');
 
 document.querySelector('#search-btn').onclick = () =>{
   searchForm.classList.toggle('active');
@@ -10,9 +10,23 @@ document.querySelector('#login-btn').onclick = () =>{
   loginForm.classList.toggle('active');
 }
 
+
 document.querySelector('#close-login-btn').onclick = () =>{
   loginForm.classList.remove('active');
 }
+
+let RegisterForm = document.querySelector('.register-form-container');
+
+document.querySelector('#register-btn').onclick = () =>{
+  loginForm.classList.toggle('active');
+}
+
+
+document.querySelector('#close-register-btn').onclick = () =>{
+  loginForm.classList.remove('active');
+}
+
+
 
 window.onscroll = () =>{
 
@@ -45,7 +59,7 @@ function loader(){
 function fadeOut(){
   setTimeout(loader, 4000);
 }
-*/
+
 var swiper = new Swiper(".books-slider", {
   loop:true,
   centeredSlides: true,
