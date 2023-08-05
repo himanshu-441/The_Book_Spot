@@ -10,6 +10,7 @@ from flask_login import (
     current_user,
     logout_user,
     login_required,
+    AnonymousUserMixin
 )
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -89,18 +90,28 @@ def load_user(user_id):
 
 @app.route('/books_category', methods=['POST', 'GET'])
 def category():
+    user=True
+    if current_user.is_anonymous:
+        user=False
     if request.method == 'POST':
         category = request.form['category']
         books=Books.query.filter(Books.category==category).all()
-        return render_template("books.html", books=books)
+        return render_template("books.html", books=books, user=user)
     
     else:
-        return render_template("books.html")
+        return render_template("books.html", user=user)
 
 
 @app.route('/books', methods=['POST', 'GET'])
 def books():
-    user=current_user
+
+    user=True
+    user_name=""
+    if current_user.is_anonymous:
+        user=False
+    
+    else:
+        user_name=current_user.first_name
     if request.method == 'POST':
         book_name = request.form['name']
         book_author = request.form['author']
@@ -112,16 +123,18 @@ def books():
         book=Books(name=book_name, author=book_author, category=category, language=language, link=link,arrival= arrival, image=image)
         db.session.add(book)
         db.session.commit()
-        return redirect("/books", user=user)
+        return redirect("/books", user=user, user_name=user_name)
     else:
-        return render_template("books.html", user=user)
+        return render_template("books.html", user=user, user_name=user_name)
 
 
 @app.route("/")
 def home():
     books=Books.query.all()
     new_arrival=Books.query.filter(Books.arrival>=2022).all()
-    user=current_user
+    user=True
+    if current_user.is_anonymous:
+        user=False
     return render_template('index.html',
                            book_name=list(popular_df['Book-Title'].values),
                            author=list(popular_df['Book-Author'].values),
@@ -133,7 +146,9 @@ def home():
                            
 @app.route("/recommender")
 def post():
-    user=current_user
+    user=True
+    if current_user.is_anonymous:
+        user=False
     return render_template('recommender.html', user=user)
 
 
@@ -157,7 +172,11 @@ def recommend():
             item.extend(list(temp_df.drop_duplicates('Book-Title')['book-link'].values))
 
             data.append(item)
-    user=current_user
+    user=True
+    
+    if current_user.is_anonymous:
+        user=False
+
     
     return render_template('recommender.html',data=data, user=user)
 
@@ -180,20 +199,22 @@ def register():
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
     if current_user.is_authenticated:
-        return redirect('/')
+        return render_template('index.html', user=True)
      
     if request.method == 'POST':
         email = request.form['email']
         user = User1.query.filter_by(email = email).first()
         if user is not None and user.check_password(request.form['password']):
             login_user(user)
-            user=current_user
+            user=True
+            if current_user.is_anonymous:
+                user=False
             return render_template('index.html', user=user)
         else:
             print('user not found')
             return redirect('/')
      
-    return render_template('login.html')
+    return render_template('index.html')
 
 @app.route('/logout')
 @login_required

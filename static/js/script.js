@@ -15,16 +15,8 @@ document.querySelector('#close-login-btn').onclick = () =>{
   loginForm.classList.remove('active');
 }
 
-let RegisterForm = document.querySelector('.register-form-container');
-
-document.querySelector('#register-btn').onclick = () =>{
-  loginForm.classList.toggle('active');
-}
 
 
-document.querySelector('#close-register-btn').onclick = () =>{
-  loginForm.classList.remove('active');
-}
 
 
 
