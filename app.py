@@ -11,6 +11,10 @@ from flask_login import (
     logout_user,
     login_required,
 )
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
+
+
 
 
 
@@ -27,11 +31,19 @@ app.secret_key = "My Secret key"
 #app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://mthwnkvmlsvjzp:ec522ca94a36167296640a3c861dc957da3d0ea3a5f41ee1d63dc5bc73807d89@ec2-44-205-177-160.compute-1.amazonaws.com:5432/d19lnnc3bfcl9n"
 db = SQLAlchemy(app)
 
+
+migrate = Migrate(app, db)
+manager = Manager(app)
+
+manager.add_command('db', MigrateCommand)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = "strong"
 login_manager.login_view = "login"
 login_manager.login_message_category = "info"
+
+
 
 
 class Books(db.Model):
@@ -48,9 +60,11 @@ class Books(db.Model):
     def __repr__(self) -> str:
         return f"{self.sno} - {self.name} - {self.author}"
     
-class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+class User1(UserMixin, db.Model):
+    __tablename__ = 'users1'
     id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50), nullable=True)
+    second_name = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(80), unique=True)
     password_hash = db.Column(db.String())
  
@@ -60,15 +74,17 @@ class User(UserMixin, db.Model):
     def check_password(self,password):
         return check_password_hash(self.password_hash,password)
     
-    
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
-
-    
 @app.before_first_request
 def create_tables():
     db.create_all()
+    
+    
+@login_manager.user_loader
+def load_user(user_id):
+    return User1.query.get(user_id)
+
+    
+
 
 
 @app.route('/books_category', methods=['POST', 'GET'])
@@ -149,9 +165,11 @@ def recommend():
 def register():
     if request.method == 'POST':
         email = request.form['email']
+        first_name = request.form['first_name']
+        second_name=request.form['second_name']
         password = request.form['password']
         password_hash = generate_password_hash(password)
-        user=User(email=email, password_hash=password_hash)
+        user=User1(email=email, password_hash=password_hash, first_name=first_name, second_name=second_name)
         db.session.add(user)
         db.session.commit()
         return redirect("/")
@@ -166,7 +184,7 @@ def login():
      
     if request.method == 'POST':
         email = request.form['email']
-        user = User.query.filter_by(email = email).first()
+        user = User1.query.filter_by(email = email).first()
         if user is not None and user.check_password(request.form['password']):
             login_user(user)
             user=current_user
@@ -187,10 +205,9 @@ def logout():
 @login_required
 def profile():
     user=current_user
-    data=[]
-    data.append(user)
+    
 
-    return render_template('profile.html', data=data)
+    return render_template('profile.html', user=user)
     
 
 
