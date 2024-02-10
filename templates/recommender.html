@@ -1,87 +1,125 @@
-{% extends"layout.html" %}
-{% block body %}
+<html>
+<style>
+body {
+   font-family: 'Times New Roman', serif;
+   margin: 0;
+   padding: 0;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+   color: #333;
+}
 
-<br/>
-<br/>
-<br/>
+.container {
+   display: flex;
+   width: 80%;
+   height: 80%;
+}
+
+.left-column {
+   width: 30%;
+   padding: 20px;
+   background-color: #fff;
+   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+   border-radius: 10px;
+   height: fit-content;
+}
+
+.right-column {
+   width: 70%;
+   padding: 20px;
+}
+
+.book-title {
+   font-size: 2em;
+   text-align: center;
+   color: #333;
+}
+
+.book-description {
+   font-size: 1.2em;
+   color: #666;
+}
+
+.book-rating {
+   font-size: 1.5em;
+   color: #f44336;
+}
+
+.book-review {
+   font-size: 1em;
+   color: #333;
+}
+
+.book-recommendation {
+   font-size: 1.2em;
+   color: #666;
+}
+
+.book-genres {
+   font-size: 1em;
+   color: #333;
+}
+
+.book-authors {
+   font-size: 1em;
+   color: #666;
+}
+
+.book-pages {
+   font-size: 1em;
+   color: #666;
+}
+
+.book-read-more {
+   background-color: #3f51b5;
+   color: #fff;
+   padding: 10px;
+   border: none;
+   border-radius: 5px;
+   font-size: 1em;
+   cursor: pointer;
+}
+
+.book-read-more:hover {
+   background-color: #2196f3;
+}
+</style>
+<body>
+  
+
+    {% if searched_data %}
+   <div class="container">
+       <div class="left-column">
+        <img src="{{ searched_data[0]['image_url'] }}" alt="Image">
+         <a href="{{ searched_data[0]['google_books_link'] }}" target="_blank ">  <button class="book-read-more">Want to read more</button></a>
+       </div>
+       <div class="right-column">
+        <h1 class="book-title">{{ searched_data[0]['title']  }}</h1>
+        <p class="book-description">{{ searched_data[0]['authors'][0]  }}</p>
+        <p>{{ searched_data[0]['description'] }}</p>
+           <h2>Book Recommendations</h2>
+           {% for book in recommended_data %}
+           <div class="book-recommendations">
+            <img src="{{ book[0]['image_url'] }}" alt="Image">
+               <p class="book-title">{{book[0]['title']}}</p>
+               <p class="book-description">{{book[0]['authors'][0]}}</p>
+               
+               <a href="{{ book[0]['google_books_link'] }}" target="_blank ">  <button class="book-read-more">Want to read more</button></a>
+           </div>
+           {% endfor %}
+       </div>
+   </div>
+
+   {% else %}
+   <form action="/recommend_books" method="post" class="example">
+       <input name="user_input" type="text"  placeholder=" Search">
+       <input type="Submit" class="btn btn-lg btn-warning">
+   </form>
+   
+   {% endif%}
 
 
-    
-        <form action="/recommend_books" method="post" class="example">
-            <input name="user_input" type="text"  placeholder=" Search">
-            <input type="Submit" class="btn btn-lg btn-warning">
-        </form>
-    
-
-
-<br/><br/><br/><br/><br/><br/>
-
-
-
-
-
-{% if data %}
-<h1 class="heading"> <span>You Searched For</span> </h1>
-
-<div class="searched">
-    
-    <div class="image">
-        <img src="{{ data[0][2] }}" alt="">
-    </div>
-    <div class="content">
-        <h3 style="font-size: 14px">  {{ data[0][0]  }} </h3>
-        <h3 style="font-size: 14px">  {{ data[0][1]  }} </h3>
-        
-        
-    </div>
-</div>
-<br/><br/><br/><br/><br/><br/>
-
-<h1 class="heading"> <span>Recommended Books</span> </h1>
-
-    <div class="swiper featured-slider">
-
-        <div class="swiper-wrapper">
-
-            
-
-        {% for i in range(1, 6) %}
-
-        <div class="swiper-slide box">
-            
-            <div class="image">
-                <img src="{{ data[i][2] }}" alt="">
-            </div>
-            <div class="content">
-                <h3 style="font-size: 14px">  {{ data[i][0]  }} </h3>
-                <h3 style="font-size: 14px">  {{ data[i][1]  }} </h3>
-                
-                
-            </div>
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-
-</div>
-
-        
-     
-    </div>
-</div>
-
-{% else %}
-<h2>No book found</h2>
-
-{% endif%}
-
-
-<br/><br/><br/><br/><br/>
-
-
-
-{% endblock %}
+</body>
+</html>

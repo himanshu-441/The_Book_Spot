@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 import pickle
 import numpy as np
+import json
+import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import (
     UserMixin,
@@ -23,6 +25,7 @@ popular_df = pickle.load(open('popular.pkl','rb'))
 pt = pickle.load(open('pts1.pkl','rb'))
 books2 = pickle.load(open('books1.pkl','rb'))
 similarity_scores =  pickle.load(open('similarity_scores1.pkl','rb'))
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///the-book-spot.db"
@@ -151,34 +154,73 @@ def post():
         user=False
     return render_template('recommender.html', user=user)
 
+def search_books(query):
+    api_key = 'AIzaSyCm1hhYNPWjjL39pZwlPTckHcuHhpSIJjw'  # Replace with your Google Books API key
+    url = f'https://www.googleapis.com/books/v1/volumes?q={query}&key={api_key}&maxResults=1'
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = json.loads(response.text)
+        return data
+    else:
+        return None
 
-
-@app.route("/recommend_books", methods=["POST"])
+@app.route("/recommend_books", methods=["POST", "GET"])
 def recommend():
-    data = []
-    user_input = request.form.get('user_input')
-    if user_input in pt.index:       
-        index = np.where(pt.index == user_input)[0][0]  
-        similar_items = sorted(list(enumerate(similarity_scores[index])), key=lambda x: x[1], reverse=True)[
-                    0:6]  # similarity of 1984 book with other books
+    if request.method=='POST':
+        recommended_data=[]
+        searched_data=[]
+        user_input = request.form.get('user_input')
+        if user_input in pt.index:       
+            index = np.where(pt.index == user_input)[0][0]  
+            similar_items = sorted(list(enumerate(similarity_scores[index])), key=lambda x: x[1], reverse=True)[
+                        0:6]  # similarity of 1984 book with other books
+
+
+            user_input = user_input.replace(' ', '+')
+            search_results = search_books(user_input)
+            if search_results and 'items' in search_results:
+                for item in search_results['items']:
+                    book_info = {
+                        'title': item['volumeInfo']['title'],
+                        'authors': item['volumeInfo'].get('authors', []),
+                        'image_url': item['volumeInfo'].get('imageLinks', {}).get('thumbnail', ''),
+                        'google_books_link': item['volumeInfo'].get('infoLink', ''),
+                        'description': item['volumeInfo'].get('description', '')
+                        
+                    }
+                    searched_data.append(book_info)
+            
+            for i in similar_items:
+                book = []
+                temp_df = books2[books2['Book-Title'] == pt.index[i[0]]]
+            
+                related_book=temp_df.drop_duplicates('Book-Title')['Book-Title'].values
+                print(related_book)
+                related_book=str(related_book)
+                related_book = related_book.replace(' ', '+')
+                search_results = search_books(related_book)
+                if search_results and 'items' in search_results:
+                    for item in search_results['items']:
+                        book_info = {
+                            'title': item['volumeInfo']['title'],
+                            'authors': item['volumeInfo'].get('authors', []),
+                            'image_url': item['volumeInfo'].get('imageLinks', {}).get('thumbnail', ''),
+                            'google_books_link': item['volumeInfo'].get('infoLink', ''),
+                            'description': item['volumeInfo'].get('description', '')
+                            
+                        }
+                        book.append(book_info)
+                recommended_data.append(book)
+                
+        user=True
+        
+        if current_user.is_anonymous:
+            user=False
 
         
-        for i in similar_items:
-            item = []
-            temp_df = books2[books2['Book-Title'] == pt.index[i[0]]]
-            item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Title'].values))
-            item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Author'].values))
-            item.extend(list(temp_df.drop_duplicates('Book-Title')['Image-URL-M'].values))
-            item.extend(list(temp_df.drop_duplicates('Book-Title')['book-link'].values))
-
-            data.append(item)
-    user=True
-    
-    if current_user.is_anonymous:
-        user=False
-
-    
-    return render_template('recommender.html',data=data, user=user)
+        return render_template('recommender.html',data=[],recommended_data=recommended_data, user=user, searched_data=searched_data)
+    else:
+        return render_template('recommender.html')
 
 @app.route("/register", methods=['POST', 'GET'])
 def register():
@@ -233,4 +275,4 @@ def profile():
 
 
 if __name__ =="__main__":
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=8080)
