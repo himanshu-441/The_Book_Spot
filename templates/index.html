@@ -27,9 +27,10 @@
        <a href="#" class="logo"> <i class="fas fa-book"></i> TheBookSpot </a>
 
         
-        <form action="/recommender" class="search-form">
+        <form action="/" class="search-form1" method="post">
             <input type="search" name="user_input" placeholder="search here..." id="search-box">
-            <label for="search-box" class="fas fa-search"><input type="Submit"></label>
+            <button><label for="search-box" class="fas fa-search"></label></button>
+            
         </form>
 
         <div class="icons">
@@ -135,6 +136,45 @@
 <!-- icons section ends -->
 
 <!-- featured section starts  -->
+{% if search %}
+<section class="featured" id="top-50-books">
+
+    <h1 class="heading"> <span>Related Search Results</span> </h1>
+
+    <div class="swiper featured-slider">
+
+        <div class="swiper-wrapper">
+
+
+            {% for book in  search %}
+            <div class="swiper-slide box">
+                <div class="icons">
+                    <h3></h3>
+
+                </div>
+                <div class="image">
+                    <img src="{{ book.image_url }}" alt="">
+                </div>
+                <div class="content">
+                    <h3 style="font-size: 14px">  {{ book.title  }} </h3>
+                    <h3 style="font-size: 14px">  {{book.authors.0}} </h3>
+                    <a href="{{  book.google_books_link }}" target="_blank" class="btn">Go to book</a>
+                </div>
+            </div>
+            {% endfor %}
+
+
+
+        </div>
+
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+
+    </div>
+
+</section>
+{% endif %}
+
 
 <section class="featured" id="top-50-books">
 
@@ -173,6 +213,8 @@
 
 </section>
 
+
+
 <!-- featured section ends -->
 
 <!-- newsletter section starts -->
@@ -200,18 +242,18 @@
         <div class="swiper-wrapper">
 
 
-            {%for book in  new_arrival%}
+            {%for book in  searched_data %}
             <div class="swiper-slide box">
                 
                 <div class="image">
-                    <img src="{{ book.image }}" alt="">
+                    <img src="{{ book.image_url }}" alt="">
                 </div>
                 <div class="content">
-                    <h3 >  {{ book.name  }}  </h3>
-                    <h2>by:-{{book.author}}</h2>
+                    <h3 >  {{ book.title  }}  </h3>
+                    <h2>by:-{{book.authors.0}}</h2>
 
                     
-                    <a href="{{  book.link }}" class="btn">Go to book</a>
+                    <a href="{{  book.google_books_link }}" target="_blank" class="btn">Go to book</a>
                 </div>
 
             </div>
@@ -335,45 +377,7 @@
 
 <!-- footer section starts  -->
 
-<section class="footer">
 
-    <div class="box-container">
-
-        
-
-        <div class="box">
-            <h3>quick links</h3>
-            <a href="/"> <i class="fas fa-arrow-right"></i> home </a>
-            <a href="/#featured"> <i class="fas fa-arrow-right"></i> featured </a>
-            <a href="/#arrivals"> <i class="fas fa-arrow-right"></i> arrivals </a>
-            <!--<a href="/#reviews"> <i class="fas fa-arrow-right"></i> reviews </a>-->
-            <a href="/recommender"> <i class="fas fa-arrow-right"></i> recommender </a>
-            <a  href="/books"><i class="fas fa-arrow-right"></i>Books</a>
-        </div>
-
-
-        <div class="box">
-            <h3>contact info</h3>
-            <a href="#"> <i class="fas fa-phone"></i> +123-456-7890 </a>
-            <a href="#"> <i class="fas fa-phone"></i> +111-222-3333 </a>
-            <a href="#"> <i class="fas fa-envelope"></i> xyz@gmail.com </a>
-            <img src="{{url_for('static', filename='image/worldmap.png')}}" class="map" alt="">
-        </div>
-        
-    </div>
-
-  
-
-
-</section>
-
-<!-- footer section ends -->
-
-<!-- loader  -->
-
-<!--<div class="loader-container">
-    <img src="      {{url_for('static', filename='image/loader-img.gif')}}     " alt="">
-</div>-->
 
 
 

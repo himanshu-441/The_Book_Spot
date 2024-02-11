@@ -131,21 +131,99 @@ def books():
         return render_template("books.html", user=user, user_name=user_name)
 
 
-@app.route("/")
+@app.route("/", methods=['POST', 'GET'])
 def home():
-    books=Books.query.all()
-    new_arrival=Books.query.filter(Books.arrival>=2022).all()
-    user=True
-    if current_user.is_anonymous:
-        user=False
-    return render_template('index.html',
-                           book_name=list(popular_df['Book-Title'].values),
-                           author=list(popular_df['Book-Author'].values),
-                           image=list(popular_df['book-path'].values),
-                           votes=list(popular_df['num_ratings'].values),
-                           rating=list(popular_df['avg_ratings'].values),
-                           link=list(popular_df['book-link'].values)
-                           , books=books, new_arrival=new_arrival, user=user)
+    if request.method=='POST':
+        search=[]
+        searched_data=[]
+        api_key = 'AIzaSyCm1hhYNPWjjL39pZwlPTckHcuHhpSIJjw'  # Replace with your Google Books API key
+        url = f'https://www.googleapis.com/books/v1/volumes?q=orderBy=newest&key={api_key}&maxResults=20'
+        response = requests.get(url)
+
+        user_input=request.form['user_input']
+        url = f'https://www.googleapis.com/books/v1/volumes?q={user_input}&key={api_key}&maxResults=5'
+        res=requests.get(url)
+        search_results={}
+        if res.status_code == 200:
+            search_results = json.loads(res.text)
+        
+    
+        if search_results and 'items' in search_results:
+                    for item in search_results['items']:
+                        book_info = {
+                            'title': item['volumeInfo']['title'],
+                            'authors': item['volumeInfo'].get('authors', []),
+                            'image_url': item['volumeInfo'].get('imageLinks', {}).get('thumbnail', ''),
+                            'google_books_link': item['volumeInfo'].get('infoLink', ''),
+                            'description': item['volumeInfo'].get('description', '')
+                            
+                        }
+                        search.append(book_info)
+
+
+        user=True
+        if current_user.is_anonymous:
+            user=False
+
+        search_results={}
+        if response.status_code == 200:
+            search_results = json.loads(response.text)
+            
+        
+        if search_results and 'items' in search_results:
+                    for item in search_results['items']:
+                        book_info = {
+                            'title': item['volumeInfo']['title'],
+                            'authors': item['volumeInfo'].get('authors', []),
+                            'image_url': item['volumeInfo'].get('imageLinks', {}).get('thumbnail', ''),
+                            'google_books_link': item['volumeInfo'].get('infoLink', ''),
+                            'description': item['volumeInfo'].get('description', '')
+                            
+                        }
+                        searched_data.append(book_info)
+        return render_template('index.html',
+                            book_name=list(popular_df['Book-Title'].values),
+                            author=list(popular_df['Book-Author'].values),
+                            image=list(popular_df['book-path'].values),
+                            votes=list(popular_df['num_ratings'].values),
+                            rating=list(popular_df['avg_ratings'].values),
+                            link=list(popular_df['book-link'].values)
+                            , searched_data=searched_data, search=search, user=user)
+    else:
+        searched_data=[]
+        api_key = 'AIzaSyCm1hhYNPWjjL39pZwlPTckHcuHhpSIJjw'  # Replace with your Google Books API key
+        url = f'https://www.googleapis.com/books/v1/volumes?q=orderBy=newest&key={api_key}&maxResults=20'
+        response = requests.get(url)
+        
+        user=True
+        if current_user.is_anonymous:
+            user=False
+
+        search_results={}
+        if response.status_code == 200:
+            search_results = json.loads(response.text)
+            
+        
+        if search_results and 'items' in search_results:
+                    for item in search_results['items']:
+                        book_info = {
+                            'title': item['volumeInfo']['title'],
+                            'authors': item['volumeInfo'].get('authors', []),
+                            'image_url': item['volumeInfo'].get('imageLinks', {}).get('thumbnail', ''),
+                            'google_books_link': item['volumeInfo'].get('infoLink', ''),
+                            'description': item['volumeInfo'].get('description', '')
+                            
+                        }
+                        searched_data.append(book_info)
+        return render_template('index.html',
+                            book_name=list(popular_df['Book-Title'].values),
+                            author=list(popular_df['Book-Author'].values),
+                            image=list(popular_df['book-path'].values),
+                            votes=list(popular_df['num_ratings'].values),
+                            rating=list(popular_df['avg_ratings'].values),
+                            link=list(popular_df['book-link'].values)
+                            , searched_data=searched_data, user=user)
+
                            
 @app.route("/recommender")
 def post():
