@@ -1,7 +1,7 @@
-searchForm = document.querySelector('.search-form');
+searchForm1 = document.querySelector('.search-form1');
 
 document.querySelector('#search-btn').onclick = () =>{
-  searchForm.classList.toggle('active');
+  searchForm1.classList.toggle('active');
 }
 
 let loginForm = document.querySelector('.login-form-container');
@@ -22,7 +22,7 @@ document.querySelector('#close-login-btn').onclick = () =>{
 
 window.onscroll = () =>{
 
-  searchForm.classList.remove('active');
+  searchForm1.classList.remove('active');
 
   if(window.scrollY > 80){
     document.querySelector('.header .header-2').classList.add('active');
